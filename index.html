@@ -56,8 +56,8 @@ a{color:inherit}
 
 /* Fine film grain */
 .grain{
-  position:fixed;inset:-60px;pointer-events:none;z-index:50;opacity:.07;mix-blend-mode:overlay;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  position:fixed;inset:-60px;pointer-events:none;z-index:50;opacity:.05;
+  background:url(assets/grain.png);will-change:transform;
   animation:grain .9s steps(6) infinite;
 }
 @keyframes grain{
@@ -89,13 +89,13 @@ main,header,footer{position:relative;z-index:1}
   padding:clamp(56px,9vw,112px) var(--gutter) clamp(72px,10vw,128px);
   border-bottom:1px solid var(--line);
 }
-.burn{position:absolute;inset:0;z-index:0;animation:flick 4.2s steps(1) infinite}
-.burn img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:right center;mix-blend-mode:screen}
+.burn{position:absolute;inset:0;z-index:0;animation:flick 4.2s steps(1) infinite;will-change:opacity}
+.burn img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:right center;will-change:opacity,transform}
 .burn .base{opacity:.92;animation:drift 40s ease-in-out infinite alternate}
 .burn .leak{opacity:0;animation:leak 27s ease-in-out infinite}
 .burn .leak.l2{animation-delay:9s}
 .burn .leak.l3{animation-delay:18s}
-@keyframes leak{0%{opacity:0}10%{opacity:.5}24%{opacity:.4}34%{opacity:0}100%{opacity:0}}
+@keyframes leak{0%{opacity:0}10%{opacity:.42}24%{opacity:.32}34%{opacity:0}100%{opacity:0}}
 @keyframes drift{from{transform:scale(1.04) translateX(0)}to{transform:scale(1.1) translateX(-2%)}}
 @keyframes flick{0%{opacity:1}31%{opacity:.9}33%{opacity:1}62%{opacity:.94}64%{opacity:1}88%{opacity:.86}89%{opacity:1}}
 .hero::before{ /* keeps the type side readable */
@@ -142,7 +142,7 @@ main,header,footer{position:relative;z-index:1}
 .name .accent{color:var(--orange)}
 .roles{
   display:inline-flex;flex-wrap:wrap;gap:8px 18px;margin:28px 0 0;padding:12px 18px 12px 16px;list-style:none;
-  background:rgba(8,8,9,.68);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-left:3px solid var(--orange);
+  background:rgba(8,8,9,.8);border-left:3px solid var(--orange);
   text-shadow:0 1px 2px rgba(0,0,0,.8);
   font-family:var(--font-display);font-weight:600;font-size:clamp(14px,1.5vw,18px);letter-spacing:-.01em;text-transform:uppercase;
 }
@@ -337,19 +337,18 @@ footer{
 /* ===== Pop layer ===== */
 /* 1 · Ambient background that follows the scroll (warm → cool) */
 .ambient{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.ambient .layer{position:absolute;left:-6%;right:-6%;top:-15vh;height:190vh;background-size:cover;background-position:center;will-change:transform,opacity;filter:blur(3px);
-  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 88%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 88%,transparent 100%)}
-.ambient .warm{background-image:url(assets/burn-5.jpg);opacity:.2}
-.ambient .cool{background-image:url(assets/burn-3.jpg);opacity:0;filter:blur(2px) hue-rotate(150deg) saturate(.7)}
-.ambient::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 50%,transparent 30%,rgba(12,12,13,.85) 100%)}
+.ambient .layer{position:absolute;left:-6%;right:-6%;top:-15vh;height:190vh;background-size:cover;background-position:center;will-change:transform,opacity;transform:translateZ(0)}
+.ambient .warm{background-image:url(assets/ambient-warm.jpg);opacity:.2}
+.ambient .cool{background-image:url(assets/ambient-cool.jpg);opacity:0}
+.ambient::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 50%,transparent 30%,rgba(12,12,13,.85) 100%),linear-gradient(180deg,var(--bg),transparent 14%,transparent 86%,var(--bg))}
 body{background:var(--bg)}
 section,.stats{position:relative}
 .stats{background:rgba(22,22,24,.7)}
 .skill{background:rgba(12,12,13,.82)}
 
 /* 2 · Ease-up reveal (content stays visible; only position and brightness change) */
-.rv{transition:transform .9s cubic-bezier(.2,.7,.2,1),filter .9s ease}
-.js .rv:not(.in){transform:translateY(18px);filter:brightness(.55)}
+.rv{transition:transform .8s cubic-bezier(.2,.7,.2,1),opacity .8s ease}
+.js .rv:not(.in){transform:translateY(18px);opacity:.45}
 
 /* 4 · Scroll progress playhead */
 .progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:45;background:var(--orange);transform-origin:0 50%;transform:scaleX(0)}
@@ -365,7 +364,7 @@ section,.stats{position:relative}
 .play{z-index:3}
 
 /* 6 · Light sweep across section dividers */
-.sweep-line{position:absolute;left:0;right:0;bottom:-1px;height:1px;z-index:2;pointer-events:none;overflow:visible}
+.sweep-line{position:absolute;left:0;right:0;bottom:-1px;height:2px;z-index:2;pointer-events:none;overflow:visible}
 .sweep-line::before{content:"";position:absolute;top:-1px;height:3px;width:38%;left:-40%;
   background:linear-gradient(90deg,transparent,var(--orange-hot) 40%,#ffd2a8 50%,var(--orange-hot) 60%,transparent);
   filter:blur(.6px);box-shadow:0 0 18px 2px rgba(240,122,50,.55);opacity:0}
@@ -399,6 +398,7 @@ section,.stats{position:relative}
 
 /* 10 · Custom cursor (mouse/trackpad only) */
 .cursor{position:fixed;left:0;top:0;z-index:70;pointer-events:none;display:none}
+.cursor .ring,.cursor .dot{will-change:transform;left:0;top:0}
 .cursor .ring{position:absolute;width:22px;height:22px;margin:-11px 0 0 -11px;border:2px solid #4fc7bd;border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,.6),inset 0 0 0 1px rgba(0,0,0,.45),0 0 8px rgba(79,199,189,.2);
   transition:width .25s,height .25s,margin .25s,background .25s,border-color .25s}
 .cursor .dot{position:absolute;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;background:#4fc7bd;border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,.7)}
@@ -418,7 +418,7 @@ section,.stats{position:relative}
 .copy.done{border-color:var(--teal);color:#b9e6e2}
 
 @media (prefers-reduced-motion:reduce){
-  .rv{transition:none}.js .rv:not(.in){transform:none;filter:none}
+  .rv{transition:none}.js .rv:not(.in){transform:none;opacity:1}
   .name.vhs,.name.vhs span,.name.vhs .track{animation:none}
   .sweep-line.go::before{animation:none}
   .shot:hover::before,.card:hover .thumb::after{animation:none}
@@ -786,18 +786,21 @@ section,.stats{position:relative}
   var bar=document.querySelector('.progress'), warm=document.querySelector('.ambient .warm'), cool=document.querySelector('.ambient .cool');
   var hero=document.querySelector('.hero'), lines=[].slice.call(document.querySelectorAll('.sweep-line')), lastY=window.scrollY, ticking=false;
   function onScroll(){
-    var y=window.scrollY, max=document.documentElement.scrollHeight-innerHeight, p=max>0?y/max:0;
+    var y=window.scrollY, max=cachedMax||1, p=Math.min(1,Math.max(0,y/max));
     bar.style.transform='scaleX('+p+')';
-    var hH=hero.offsetHeight, q=Math.max(0,Math.min(1,(y-hH)/Math.max(1,max-hH)));
+    var hH=cachedHero, q=Math.max(0,Math.min(1,(y-hH)/Math.max(1,max-hH)));
     if(!reduce){ var travel=innerHeight*0.6; warm.style.transform='translateY('+(-p*travel)+'px)'; cool.style.transform='translateY('+(-p*travel*0.7)+'px)'; }
     warm.style.opacity=(0.2*(1-q)+0.05).toFixed(3); cool.style.opacity=(0.16*q).toFixed(3);
-    var mid=innerHeight*0.62;
-    lines.forEach(function(l){ var b=l.getBoundingClientRect().top, prev=b+(y-lastY);
-      if((prev>mid&&b<=mid)||(prev<mid&&b>=mid)){ l.classList.remove('go'); void l.offsetWidth; l.classList.add('go'); } });
-    lastY=y; ticking=false;
+    ticking=false;
   }
   addEventListener('scroll',function(){ if(!ticking){ ticking=true; requestAnimationFrame(onScroll) } },{passive:true});
-  addEventListener('resize',onScroll); onScroll();
+  var cachedMax=0, cachedHero=0;
+  function measure(){ cachedMax=document.documentElement.scrollHeight-innerHeight; cachedHero=hero.offsetHeight; }
+  addEventListener('resize',function(){measure(); onScroll()}); addEventListener('load',measure); measure(); onScroll();
+  if('IntersectionObserver' in window){
+    var so=new IntersectionObserver(function(es){es.forEach(function(e){ if(!e.isIntersecting) return; var l=e.target; l.classList.remove('go'); l.offsetWidth; l.classList.add('go'); })},{rootMargin:'-62% 0px -37% 0px'});
+    lines.forEach(function(l){so.observe(l)});
+  }
 
   /* VHS warm-up only once per load */
   var nm=document.querySelector('.name'); nm.addEventListener('animationend',function(e){ if(e.target===nm) nm.classList.remove('vhs') });
@@ -805,12 +808,12 @@ section,.stats{position:relative}
   /* custom cursor */
   if(window.matchMedia && matchMedia('(hover:hover) and (pointer:fine)').matches){
     document.body.classList.add('has-cursor');
-    var cur=document.querySelector('.cursor'), ring=cur.querySelector('.ring'), mx=-100,my=-100,rx=-100,ry=-100;
-    addEventListener('mousemove',function(e){ mx=e.clientX; my=e.clientY; cur.querySelector('.dot').style.transform='translate('+mx+'px,'+my+'px)';
-      var hot=e.target.closest('a,button,.card,.shot'); cur.classList.toggle('hot',!!hot); });
+    var cur=document.querySelector('.cursor'), ring=cur.querySelector('.ring'), dotEl=cur.querySelector('.dot'), mx=-100,my=-100,rx=-100,ry=-100;
+    addEventListener('mousemove',function(e){ mx=e.clientX; my=e.clientY; dotEl.style.transform='translate3d('+mx+'px,'+my+'px,0)';
+      var hot=!!(e.target.closest&&e.target.closest('a,button,.card,.shot')); if(hot!==cur._hot){cur._hot=hot; cur.classList.toggle('hot',hot)} });
     addEventListener('mousedown',function(){cur.classList.add('down')}); addEventListener('mouseup',function(){cur.classList.remove('down')});
     document.addEventListener('mouseleave',function(){ mx=my=rx=ry=-100 });
-    (function loop(){ rx+= (mx-rx)*(reduce?1:.2); ry+=(my-ry)*(reduce?1:.2); ring.style.transform='translate('+rx+'px,'+ry+'px)'; requestAnimationFrame(loop) })();
+    (function loop(){ rx+=(mx-rx)*(reduce?1:.55); ry+=(my-ry)*(reduce?1:.55); ring.style.transform='translate3d('+rx+'px,'+ry+'px,0)'; requestAnimationFrame(loop) })();
   }
 
   /* copy email */
